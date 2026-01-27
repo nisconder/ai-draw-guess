@@ -9,6 +9,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 一个基于Next.js和智谱AI的文字描述猜测游戏。AI会使用智谱AI的GLM-4模型生成生动的文字描述，玩家需要根据描述猜测出对应的词语。
+所有核心代码均由GLM 4.7生成。人类仅完成上传和添加证书工作。
 
 > 💡 **首次使用？** 查看 [快速开始指南](QUICKSTART.md) 立即开始！
 
