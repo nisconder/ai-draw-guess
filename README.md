@@ -1,6 +1,6 @@
 # AI文字描述猜词游戏 📝
 
-> Powered by ZhipuAI GLM-4 | Developed with ❤️ by Vibe Coding
+> Powered by ZhipuAI GLM-4 | Vibe Coding
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
