@@ -174,7 +174,7 @@ const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completi
 
 ### Vercel部署（推荐）
 
-[![Deploy with Vercel](https://vercel.com/button)]
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nisconder/ai-draw-guess)
 
 ### 其他平台
 
