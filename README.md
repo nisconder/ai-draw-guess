@@ -174,7 +174,7 @@ const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completi
 
 ### Vercel部署（推荐）
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/ai-draw-guess)
+[![Deploy with Vercel](https://vercel.com/button)]
 
 ### 其他平台
 
@@ -227,14 +227,14 @@ npm run lint      # 代码检查
 
 ## 👨‍💻 关于 Vibe Coding
 
-**Vibe Coding** 是一个专注于创新技术的开发团队，致力于打造高质量的开源项目。
+**Vibe Coding** “Vibe Coding”（氛围编码/感觉编码）是由 AI 领域领军人物 Andrej Karpathy 在 2025 年初普及的一个概念。它代表了软件开发模式的根本性转变：开发者不再专注于底层的语法（Syntax）和实现细节，而是专注于上层的意图（Intent）和最终效果（Vibe）。
 
-本项目由 Vibe Coding 团队开发，使用智谱AI的GLM-4模型为用户提供有趣的AI互动体验。
+在 2026 年，Vibe Coding 已不再是单纯的“使用 AI 辅助写代码”，而是一种成熟的管理型开发流。你不再是砌砖的“码农”，而是指挥 AI 施工队的“项目经理”。
 
 ## 📮 联系方式
 
-- 项目主页: [GitHub](https://github.com/YOUR_USERNAME/ai-draw-guess)
-- 问题反馈: [Issues](https://github.com/YOUR_USERNAME/ai-draw-guess/issues)
+- 项目主页: [GitHub](https://github.com/nisconder/ai-draw-guess)
+- 问题反馈: [Issues](https://github.com/nisconder/ai-draw-guess/issues)
 
 ## 🙏 致谢
 
