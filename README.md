@@ -250,6 +250,4 @@ npm run lint      # 代码检查
 
 **如果这个项目对你有帮助，请给一个 ⭐ Star！**
 
-Made with ❤️ by [Vibe Coding](https://github.com/Vibe-Coding)
-
 </div>
