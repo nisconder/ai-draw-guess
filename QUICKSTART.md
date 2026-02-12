@@ -39,12 +39,27 @@
 npm install
 ```
 
-### 2. 启动开发服务器
+### 2. 配置环境变量
+```bash
+# Windows PowerShell
+Copy-Item .env.example .env.local
+
+# Linux/Mac
+cp .env.example .env.local
+```
+
+编辑 `.env.local`，填入你的真实密钥：
+
+```dotenv
+ZHIPU_API_KEY=your_real_key
+```
+
+### 3. 启动开发服务器
 ```bash
 npm run dev
 ```
 
-### 3. 打开浏览器
+### 4. 打开浏览器
 访问 http://localhost:3000
 
 ## 🔑 获取API密钥
@@ -56,12 +71,13 @@ npm run dev
 
 ## 🎮 游戏玩法
 
-1. 在游戏界面输入智谱AI API密钥
+1. 在 `.env.local` 中配置好 `ZHIPU_API_KEY`
 2. 点击"开始游戏"
 3. AI会生成文字描述和类别提示
 4. 根据描述猜测对应的词语
 5. 输入答案并提交
-6. 答对得10分，完成5轮挑战
+6. 答对得10分，系统自动进入下一轮，完成5轮挑战
+7. 如果AI描述生成失败，系统会自动重试1次
 
 ## ⚡ 常见问题
 

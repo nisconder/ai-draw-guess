@@ -47,19 +47,25 @@ npm run dev
 http://localhost:3000
 ```
 
-## 🔑 获取API密钥
+## 🔑 获取并配置API密钥
 
 1. 访问: https://open.bigmodel.cn/
 2. 注册或登录（免费）
 3. 生成API密钥
+4. 在项目根目录创建 `.env.local` 并填入：
+
+```dotenv
+ZHIPU_API_KEY=your_real_key
+```
 
 ## 🎮 开始游戏
 
-1. 在游戏界面输入API密钥
+1. 在 `.env.local` 配置好密钥
 2. 点击"开始游戏"
 3. 根据AI描述猜测词语
 4. 答对得10分
-5. 完成5轮挑战
+5. 系统自动进入下一轮并完成5轮挑战
+6. 如果AI描述生成失败，系统会自动重试1次
 
 ## 📂 脚本说明
 

@@ -16,13 +16,14 @@
 ## ✨ 功能特点
 
 - 🤖 **AI生成生动文字描述** - 使用智谱AI GLM-4-Flash模型
-- 🎯 **5轮游戏挑战** - 每局5个随机词汇
-- ⏱️ **每轮60秒倒计时** - 增加游戏紧张感
+- 🎯 **5轮游戏挑战** - 每局5个不重复词汇
+- ⏱️ **每轮60秒倒计时** - 超时自动判定并进入下一轮
 - 🏆 **实时计分系统** - 答对得10分
+- 🔁 **回合失败自动重试** - 描述生成失败时自动重试1次
 - 💡 **类别提示辅助** - 帮助玩家快速定位
 - 📱 **响应式设计** - 支持手机、平板和桌面
 - 🎨 **精美渐变界面** - 现代化的UI设计
-- 🌐 **纯前端架构** - 无需后端服务器
+- 🌐 **Next.js一体化架构** - 前端页面 + 内置API路由
 
 ## 🚀 快速开始
 
@@ -39,10 +40,16 @@ quick-start.bat
 # 1. 安装依赖
 npm install
 
-# 2. 启动开发服务器
+# 2. 配置环境变量
+cp .env.example .env.local
+
+# 3. 编辑 .env.local，填入你的密钥
+# ZHIPU_API_KEY=your_real_key
+
+# 4. 启动开发服务器
 npm run dev
 
-# 3. 打开浏览器
+# 5. 打开浏览器
 # http://localhost:3000
 ```
 
@@ -51,16 +58,16 @@ npm run dev
 1. 访问 [智谱AI开放平台](https://open.bigmodel.cn/)
 2. 注册/登录账号（免费）
 3. 在API密钥页面生成新的API密钥
-4. 在游戏界面输入密钥开始游戏
+4. 将密钥写入项目根目录的 `.env.local` 文件
 
 ## 🎮 游戏玩法
 
-1. 输入你的智谱AI API密钥
+1. 在 `.env.local` 中配置好 `ZHIPU_API_KEY`
 2. 点击"开始游戏"
 3. AI会生成一个生动形象的文字描述，并提供类别提示
 4. 在输入框中输入你的猜测（词语）
 5. 点击"提交答案"或按回车键
-6. 答对得10分，继续下一轮
+6. 答对得10分，系统自动进入下一轮
 7. 完成5轮后查看最终得分和准确率
 
 ## 🛠️ 技术栈
@@ -139,29 +146,19 @@ timeLeft: 60,    // 每轮倒计时（秒）
 
 ### API调用
 ```typescript
-// 调用智谱AI生成描述
-const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
+// 调用项目内置API生成描述（服务端使用 ZHIPU_API_KEY）
+const response = await fetch('/api/generate-description', {
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`
+    'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    model: 'glm-4-flash',
-    messages: [
-      {
-        role: 'system',
-        content: '你是一个绘画描述专家。请用简洁、生动、形象的语言描述一个物体或概念...'
-      },
-      {
-        role: 'user',
-        content: `请描述"${word}"，不要直接说出它的名字。`
-      }
-    ],
-    temperature: 0.7,
-    max_tokens: 200
+    word: '苹果'
   })
 })
+
+const data = await response.json()
+console.log(data.description)
 ```
 
 ## 📖 文档

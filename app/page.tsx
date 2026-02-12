@@ -1,6 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
+type RoundResult = 'correct' | 'wrong' | 'timeout' | null
+
+interface WordItem {
+  word: string
+  hint: string
+}
 
 interface GameState {
   isPlaying: boolean
@@ -13,10 +20,10 @@ interface GameState {
   totalRounds: number
   timeLeft: number
   showResult: boolean
-  isCorrect: boolean
+  resultType: RoundResult
 }
 
-const wordList = [
+const wordList: WordItem[] = [
   { word: '苹果', hint: '水果' },
   { word: '猫咪', hint: '宠物' },
   { word: '太阳', hint: '天体' },
@@ -40,6 +47,11 @@ const wordList = [
 ]
 
 export default function Home() {
+  const roundDuration = 60
+  const roundsPerGame = 5
+  const autoNextDelay = 1800
+  const maxRetryCount = 1
+
   const [gameState, setGameState] = useState<GameState>({
     isPlaying: false,
     currentWord: '',
@@ -48,14 +60,133 @@ export default function Home() {
     isGenerating: false,
     score: 0,
     round: 1,
-    totalRounds: 5,
-    timeLeft: 60,
+    totalRounds: roundsPerGame,
+    timeLeft: roundDuration,
     showResult: false,
-    isCorrect: false,
+    resultType: null,
   })
 
   const [guessInput, setGuessInput] = useState('')
-  const [apiKey, setApiKey] = useState('')
+  const [sessionWords, setSessionWords] = useState<WordItem[]>([])
+  const requestIdRef = useRef(0)
+  const nextRoundTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const clearNextRoundTimer = () => {
+    if (nextRoundTimerRef.current) {
+      clearTimeout(nextRoundTimerRef.current)
+      nextRoundTimerRef.current = null
+    }
+  }
+
+  const shuffleWords = (words: WordItem[]) => {
+    const copied = [...words]
+    for (let i = copied.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[copied[i], copied[j]] = [copied[j], copied[i]]
+    }
+    return copied
+  }
+
+  const buildSessionWords = (totalRounds: number) => {
+    const shuffled = shuffleWords(wordList)
+    return shuffled.slice(0, Math.min(totalRounds, shuffled.length))
+  }
+
+  const generateDescription = async (word: string) => {
+    const response = await fetch('/api/generate-description', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        word,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok || data.error) {
+      throw new Error(data.error || '描述生成失败')
+    }
+
+    return data.description as string
+  }
+
+  const loadRound = async (words: WordItem[], roundIndex: number, resetScore = false) => {
+    const selectedWord = words[roundIndex]
+    if (!selectedWord) {
+      return
+    }
+
+    clearNextRoundTimer()
+    const requestId = ++requestIdRef.current
+    setGuessInput('')
+
+    setGameState(prev => ({
+      ...prev,
+      isPlaying: true,
+      currentWord: selectedWord.word,
+      currentHint: selectedWord.hint,
+      description: null,
+      isGenerating: true,
+      score: resetScore ? 0 : prev.score,
+      round: roundIndex + 1,
+      totalRounds: words.length,
+      timeLeft: roundDuration,
+      showResult: false,
+      resultType: null,
+    }))
+
+    let lastError: unknown = null
+
+    for (let attempt = 0; attempt <= maxRetryCount; attempt += 1) {
+      try {
+        const description = await generateDescription(selectedWord.word)
+        if (requestId !== requestIdRef.current) {
+          return
+        }
+
+        setGameState(prev => ({
+          ...prev,
+          description,
+          isGenerating: false,
+        }))
+        return
+      } catch (error) {
+        lastError = error
+      }
+    }
+
+    if (requestId !== requestIdRef.current) {
+      return
+    }
+
+    const message = lastError instanceof Error ? lastError.message : '描述生成失败，请稍后重试'
+    alert(`描述生成失败，已自动重试1次：${message}`)
+    setGameState(prev => ({ ...prev, isGenerating: false, isPlaying: false }))
+  }
+
+  const finishCurrentRound = (resultType: Exclude<RoundResult, null>) => {
+    if (gameState.showResult) {
+      return
+    }
+
+    const isCorrect = resultType === 'correct'
+
+    setGameState(prev => ({
+      ...prev,
+      showResult: true,
+      resultType,
+      score: isCorrect ? prev.score + 10 : prev.score,
+    }))
+
+    const isLastRound = gameState.round >= gameState.totalRounds
+    if (!isLastRound) {
+      nextRoundTimerRef.current = setTimeout(() => {
+        void loadRound(sessionWords, gameState.round)
+      }, autoNextDelay)
+    }
+  }
 
   useEffect(() => {
     let timer: NodeJS.Timeout
@@ -64,130 +195,42 @@ export default function Home() {
         setGameState(prev => ({ ...prev, timeLeft: prev.timeLeft - 1 }))
       }, 1000)
     } else if (gameState.timeLeft === 0 && !gameState.showResult) {
-      handleGameOver(false)
+      finishCurrentRound('timeout')
     }
     return () => clearTimeout(timer)
   }, [gameState.isPlaying, gameState.timeLeft, gameState.showResult])
 
+  useEffect(() => {
+    return () => {
+      clearNextRoundTimer()
+      requestIdRef.current += 1
+    }
+  }, [])
+
   const startGame = async () => {
-    if (!apiKey.trim()) {
-      alert('请输入智谱AI API密钥')
+    const words = buildSessionWords(roundsPerGame)
+    if (words.length === 0) {
+      alert('词库为空，无法开始游戏')
       return
     }
 
-    const randomWord = wordList[Math.floor(Math.random() * wordList.length)]
-    setGameState({
-      isPlaying: true,
-      currentWord: randomWord.word,
-      currentHint: randomWord.hint,
-      description: null,
-      isGenerating: true,
-      score: 0,
-      round: 1,
-      totalRounds: 5,
-      timeLeft: 60,
-      showResult: false,
-      isCorrect: false,
-    })
-
-    try {
-      const response = await fetch('/api/generate-description', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          word: randomWord.word,
-          apiKey: apiKey,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (data.error) {
-        alert('描述生成失败: ' + data.error)
-        setGameState(prev => ({ ...prev, isGenerating: false, isPlaying: false }))
-      } else {
-        setGameState(prev => ({
-          ...prev,
-          description: data.description,
-          isGenerating: false,
-        }))
-      }
-    } catch (error) {
-      alert('描述生成失败，请检查API密钥')
-      setGameState(prev => ({ ...prev, isGenerating: false, isPlaying: false }))
-    }
+    setSessionWords(words)
+    await loadRound(words, 0, true)
   }
 
   const submitGuess = () => {
+    if (!guessInput.trim() || gameState.showResult || gameState.isGenerating) {
+      return
+    }
+
     const isCorrect = guessInput.trim().toLowerCase() === gameState.currentWord.toLowerCase()
-    
-    setGameState(prev => ({
-      ...prev,
-      showResult: true,
-      isCorrect,
-      score: isCorrect ? prev.score + 10 : prev.score,
-    }))
 
-    if (isCorrect && gameState.round < gameState.totalRounds) {
-      setTimeout(() => nextRound(), 2000)
-    }
-  }
-
-  const nextRound = async () => {
-    const randomWord = wordList[Math.floor(Math.random() * wordList.length)]
-    setGameState(prev => ({
-      ...prev,
-      round: prev.round + 1,
-      currentWord: randomWord.word,
-      currentHint: randomWord.hint,
-      description: null,
-      isGenerating: true,
-      showResult: false,
-      timeLeft: 60,
-    }))
-
-    try {
-      const response = await fetch('/api/generate-description', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          word: randomWord.word,
-          apiKey: apiKey,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (data.error) {
-        alert('描述生成失败: ' + data.error)
-        setGameState(prev => ({ ...prev, isGenerating: false }))
-      } else {
-        setGameState(prev => ({
-          ...prev,
-          description: data.description,
-          isGenerating: false,
-        }))
-      }
-    } catch (error) {
-      alert('描述生成失败')
-      setGameState(prev => ({ ...prev, isGenerating: false }))
-    }
-  }
-
-  const handleGameOver = (isCorrect: boolean) => {
-    setGameState(prev => ({
-      ...prev,
-      showResult: true,
-      isCorrect,
-      score: isCorrect ? prev.score + 10 : prev.score,
-    }))
+    finishCurrentRound(isCorrect ? 'correct' : 'wrong')
   }
 
   const resetGame = () => {
+    clearNextRoundTimer()
+    requestIdRef.current += 1
     setGameState({
       isPlaying: false,
       currentWord: '',
@@ -196,12 +239,13 @@ export default function Home() {
       isGenerating: false,
       score: 0,
       round: 1,
-      totalRounds: 5,
-      timeLeft: 60,
+      totalRounds: roundsPerGame,
+      timeLeft: roundDuration,
       showResult: false,
-      isCorrect: false,
+      resultType: null,
     })
     setGuessInput('')
+    setSessionWords([])
   }
 
   return (
@@ -211,17 +255,7 @@ export default function Home() {
 
         {!gameState.isPlaying && (
           <div className="text-center">
-            <div className="mb-6">
-              <label className="block text-lg font-semibold mb-2 text-gray-700">智谱AI API密钥</label>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="输入你的智谱AI API密钥"
-                className="w-full max-w-md px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500"
-              />
-              <p className="text-sm text-gray-500 mt-2">获取API密钥：<a href="https://open.bigmodel.cn/" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">open.bigmodel.cn</a></p>
-            </div>
+            <p className="text-sm text-gray-500 mb-4">请先在服务端环境变量中配置 ZHIPU_API_KEY</p>
             <p className="text-gray-600 mb-6">AI会用生动形象的文字描述一个物体或概念，你需要根据描述猜测出它是什么！</p>
             <button
               onClick={startGame}
@@ -282,10 +316,11 @@ export default function Home() {
                   onChange={(e) => setGuessInput(e.target.value)}
                   placeholder="输入你的猜测..."
                   className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 text-lg"
-                  onKeyPress={(e) => e.key === 'Enter' && submitGuess()}
+                  onKeyDown={(e) => e.key === 'Enter' && submitGuess()}
                 />
                 <button
                   onClick={submitGuess}
+                  disabled={!guessInput.trim()}
                   className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all transform hover:scale-105"
                 >
                   提交答案
@@ -295,12 +330,12 @@ export default function Home() {
 
             {gameState.showResult && (
               <div className="text-center">
-                <div className={`mb-6 p-6 rounded-lg ${gameState.isCorrect ? 'bg-green-100' : 'bg-red-100'}`}>
-                  <p className={`text-3xl font-bold mb-2 ${gameState.isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                    {gameState.isCorrect ? '🎉 正确！' : '❌ 错误！'}
+                <div className={`mb-6 p-6 rounded-lg ${gameState.resultType === 'correct' ? 'bg-green-100' : gameState.resultType === 'timeout' ? 'bg-yellow-100' : 'bg-red-100'}`}>
+                  <p className={`text-3xl font-bold mb-2 ${gameState.resultType === 'correct' ? 'text-green-600' : gameState.resultType === 'timeout' ? 'text-yellow-700' : 'text-red-600'}`}>
+                    {gameState.resultType === 'correct' ? '🎉 正确！' : gameState.resultType === 'timeout' ? '⏰ 超时！' : '❌ 错误！'}
                   </p>
                   <p className="text-xl text-gray-700 mb-2">答案是: <span className="font-bold text-purple-600">{gameState.currentWord}</span></p>
-                  {gameState.isCorrect && <p className="text-lg text-green-600">+10分</p>}
+                  {gameState.resultType === 'correct' && <p className="text-lg text-green-600">+10分</p>}
                 </div>
                 
                 {gameState.round >= gameState.totalRounds ? (
@@ -311,12 +346,7 @@ export default function Home() {
                     <p className="text-lg text-gray-600">准确率: {gameState.round > 0 ? Math.round((gameState.score / 10) / gameState.round * 100) : 0}%</p>
                   </div>
                 ) : (
-                  <button
-                    onClick={nextRound}
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-full text-xl transition-all transform hover:scale-105 shadow-lg"
-                  >
-                    下一轮
-                  </button>
+                  <p className="text-lg text-gray-600 mb-4">即将进入下一轮...</p>
                 )}
                 
                 <button
