@@ -65,6 +65,7 @@ export default function Home() {
   const [newAchievements, setNewAchievements] = useState<Achievement[]>([])
   const [bannerQueue, setBannerQueue] = useState<Achievement[]>([])
   const [bannerVisible, setBannerVisible] = useState(false)
+  const [errorToast, setErrorToast] = useState<string | null>(null)
 
   const requestIdRef = useRef(0)
   const nextRoundTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -151,7 +152,7 @@ export default function Home() {
     }
 
     const message = lastError instanceof Error ? lastError.message : '描述生成失败，请稍后重试'
-    alert(`描述生成失败，已自动重试1次：${message}`)
+    setErrorToast(`描述生成失败，已自动重试1次：${message}`)
     setGameState(prev => ({ ...prev, isGenerating: false, phase: 'idle' }))
   }
 
@@ -286,11 +287,17 @@ export default function Home() {
     }
   }, [bannerQueue, bannerVisible])
 
+  useEffect(() => {
+    if (!errorToast) return
+    const timer = setTimeout(() => setErrorToast(null), 5000)
+    return () => clearTimeout(timer)
+  }, [errorToast])
+
   const startGame = async (difficulty: Difficulty) => {
     const config = getDifficultyConfig(difficulty)
     const words = getSessionWords('survival', difficulty, survivalWordPool)
     if (words.length === 0) {
-      alert('词库为空，无法开始游戏')
+      setErrorToast('词库为空，无法开始游戏')
       return
     }
 
@@ -397,6 +404,17 @@ export default function Home() {
 
   return (
     <ErrorBoundary>
+      {errorToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg animate-[fade-in_0.3s_ease-out] max-w-md text-center">
+          <span>{errorToast}</span>
+          <button
+            onClick={() => setErrorToast(null)}
+            className="ml-3 text-white/80 hover:text-white font-bold"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 p-4">
         <ScreenOverlay effect={gameState.screenEffect} />
         <AchievementBanner

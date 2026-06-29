@@ -1,23 +1,20 @@
 @echo off
-chcp 437 >nul
+title 🔥 生存竞速 — 一键启动
 
 echo ======================================
-echo   AI Game Quick Start
+echo   🔥 生存竞速 (Survival Rush)
+echo   一键安装 + 启动
 echo ======================================
 echo.
 
-echo Step 1: Installing dependencies...
+echo [1/2] 安装依赖...
 call npm install
 
 echo.
-echo Step 2: Starting development server...
-echo.
-echo Open browser: http://localhost:3000
-echo Get API key: https://open.bigmodel.cn/
-echo.
-echo Press Ctrl+C to stop server
-echo.
-echo ======================================
+echo [2/2] 启动开发服务器...
+echo   打开浏览器: http://localhost:3000
+echo   首次使用请在首页展开「⚙️ API 配置」输入密钥
+echo   按 Ctrl+C 停止
 echo.
 
 call npm run dev
