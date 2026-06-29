@@ -1,47 +1,47 @@
-@echo off
+﻿@echo off
 chcp 65001 >nul
-title 🔥 生存竞速 — 环境检测
+title Survival Rush - Env Check
 
 echo ======================================
-echo   🔥 生存竞速 — 环境检测
+echo   Survival Rush - Environment Check
 echo ======================================
 echo.
 
-echo 检查 Node.js...
+echo Checking Node.js...
 where node >nul 2>nul
 if %errorlevel% equ 0 (
-    for /f "tokens=*" %%i in ('node --version') do echo √ Node.js %%i
+    for /f "tokens=*" %%i in ('node --version') do echo [OK] Node.js %%i
 ) else (
-    echo ✗ Node.js 未安装
-    echo   请访问 https://nodejs.org/
+    echo [X] Node.js not installed
+    echo    Download: https://nodejs.org/
     pause
     exit /b 1
 )
 echo.
 
-echo 检查 npm...
+echo Checking npm...
 where npm >nul 2>nul
 if %errorlevel% equ 0 (
-    for /f "tokens=*" %%i in ('npm --version') do echo √ npm v%%i
+    for /f "tokens=*" %%i in ('npm --version') do echo [OK] npm v%%i
 ) else (
-    echo ✗ npm 未安装
+    echo [X] npm not installed
     pause
     exit /b 1
 )
 echo.
 
-echo 检查项目文件...
-if exist "package.json" (echo √ package.json) else (echo ✗ package.json 缺失)
-if exist "app\page.tsx" (echo √ app\page.tsx) else (echo ✗ app\page.tsx 缺失)
-if exist "node_modules" (echo √ 依赖已安装) else (echo ○ 依赖未安装)
+echo Checking project files...
+if exist "package.json" (echo [OK] package.json) else (echo [X] package.json missing)
+if exist "app\page.tsx" (echo [OK] app\page.tsx) else (echo [X] app\page.tsx missing)
+if exist "node_modules" (echo [OK] dependencies installed) else (echo [--] dependencies not installed)
 echo.
 
 echo ======================================
-echo   检测完成
+echo   Check complete
 echo ======================================
 echo.
 
-set /p START="启动服务器？(y/n): "
+set /p START="Start server? (y/n): "
 if /i "%START%"=="y" (
     echo.
     npm run dev

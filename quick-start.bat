@@ -1,20 +1,20 @@
-@echo off
-title 🔥 生存竞速 — 一键启动
+﻿@echo off
+title Survival Rush - Quick Start
 
 echo ======================================
-echo   🔥 生存竞速 (Survival Rush)
-echo   一键安装 + 启动
+echo   Survival Rush - Sheng Cun Jing Su
+echo   One-click Install + Start
 echo ======================================
 echo.
 
-echo [1/2] 安装依赖...
+echo [1/2] Installing dependencies...
 call npm install
 
 echo.
-echo [2/2] 启动开发服务器...
-echo   打开浏览器: http://localhost:3000
-echo   首次使用请在首页展开「⚙️ API 配置」输入密钥
-echo   按 Ctrl+C 停止
+echo [2/2] Starting dev server...
+echo    Open: http://localhost:3000
+echo    Enter API key in game UI: Settings - API Config
+echo    Press Ctrl+C to stop
 echo.
 
 call npm run dev
