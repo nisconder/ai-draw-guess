@@ -61,12 +61,20 @@ interface ChatCompletionResponse {
 /**
  * Generate an AI description for a word using the specified provider.
  * This is a server-only function — never call from client components.
+ *
+ * An optional `apiKey` may be supplied by the client (browser localStorage).
+ * When present and non-empty, it overrides the server-side env var for this
+ * single request; when absent, the env var fallback still works.
  */
-export async function generateDescription(word: string, provider: ProviderType = 'zhipu'): Promise<string> {
-  const config = getApiConfig(provider)
+export async function generateDescription(
+  word: string,
+  provider: ProviderType = 'zhipu',
+  apiKey?: string,
+): Promise<string> {
+  const config = getApiConfig(provider, apiKey)
   if (!config) {
     throw new ApiError(
-      `未配置 ${getProviderConfig(provider)?.displayName || provider} 的API密钥，请在环境变量中设置`,
+      `未配置 ${getProviderConfig(provider)?.displayName || provider} 的API密钥，请在环境变量中设置或在页面中填写`,
       provider
     )
   }

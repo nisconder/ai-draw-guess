@@ -10,10 +10,10 @@ export interface WordItem {
 }
 
 // Game phases
-export type GamePhase = 'idle' | 'playing' | 'round_active' | 'showing_result' | 'game_over'
+export type GamePhase = 'idle' | 'playing' | 'showing_result' | 'game_over'
 
 // Game modes
-export type GameMode = 'classic' | 'practice' | 'timed' | 'hard'
+export type GameMode = 'survival'
 
 // Round result
 export type RoundResult = 'correct' | 'wrong' | 'timeout' | null
@@ -30,13 +30,43 @@ export interface ProviderConfig {
   description: string
 }
 
-// Game settings
+// Screen effect types for survival rush feedback
+export type ScreenEffectType = 'correct' | 'wrong' | 'timeout' | 'combo' | 'heart-lose' | 'heart-gain' | 'achievement' | 'game-over'
+
+// A transient screen effect triggered by gameplay events
+export interface ScreenEffect {
+  type: ScreenEffectType
+  intensity: number // 0-10
+  timestamp: number
+}
+
+// An achievement definition
+export interface Achievement {
+  id: string
+  name: string
+  description: string
+  icon: string // emoji or text icon
+  condition: string // human-readable condition description
+  unlockedAt?: string // ISO timestamp
+}
+
+// Progress tracking for a single achievement
+export interface AchievementProgress {
+  achievementId: string
+  unlocked: boolean
+  unlockedAt?: string
+}
+
+// Player rank tiers based on performance
+export type PlayerRank = 'bronze' | 'silver' | 'gold' | 'diamond' | 'master' | 'legend'
+
+// Game settings (survival mode)
 export interface GameSettings {
-  mode: GameMode
-  difficulty: Difficulty | 'all'
+  difficulty: Difficulty
+  wordTimeLimit: number
+  initialLives: number
+  comboHealThreshold: number
   provider: ProviderType
-  totalRounds: number
-  roundDuration: number
   allowHints: boolean
   showCategory: boolean
 }
@@ -49,39 +79,46 @@ export interface GameState {
   description: string | null
   isGenerating: boolean
   score: number
-  round: number
-  totalRounds: number
+  lives: number
+  maxLives: number
+  combo: number
+  wordsCompleted: number
+  longestStreak: number
   timeLeft: number
-  totalTime: number
+  wordTimeLimit: number
+  startTime: number
+  wordStartTime: number
   showResult: boolean
   resultType: RoundResult
-  streak: number
-  roundScores: number[]
+  screenEffect: ScreenEffect | null
+  unlockedAchievements: string[]
   mode: GameMode
   provider: ProviderType
 }
 
-// Game history entry
+// Game history entry (survival mode)
 export interface GameHistory {
   date: string
   mode: GameMode
+  difficulty: Difficulty
   score: number
-  totalRounds: number
-  correctCount: number
+  wordsCompleted: number
+  livesLost: number
+  longestStreak: number
   accuracy: number
-  averageTime: number
-  bestStreak: number
+  achievementsUnlocked: string[]
 }
 
-// Aggregate game stats
+// Aggregate game stats (survival mode)
 export interface GameStats {
   totalGames: number
   totalScore: number
+  totalWordsCompleted: number
+  totalLivesLost: number
   averageScore: number
-  winRate: number
+  bestScore: number
   bestStreak: number
-  totalCorrect: number
-  totalRounds: number
+  totalAchievements: number
 }
 
 // API request/response types

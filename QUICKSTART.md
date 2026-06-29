@@ -39,7 +39,12 @@
 npm install
 ```
 
-### 2. 配置环境变量
+### 2. 配置 API 密钥
+
+> 💡 **快捷方式**：启动游戏后，直接在首页展开「⚙️ API 配置」面板选择提供商并输入密钥即可，无需编辑 `.env.local` 文件。密钥保存在浏览器本地。
+
+你也可以通过环境变量方式配置（适用于部署场景）：
+
 ```bash
 # Windows PowerShell
 Copy-Item .env.example .env.local
@@ -48,10 +53,14 @@ Copy-Item .env.example .env.local
 cp .env.example .env.local
 ```
 
-编辑 `.env.local`，填入你的真实密钥：
+编辑 `.env.local`，填入你的真实密钥（至少配置一个即可）：
 
 ```dotenv
-ZHIPU_API_KEY=your_real_key
+# ZHIPU_API_KEY=your_zhipu_key
+# DEEPSEEK_API_KEY=your_deepseek_key
+# QWEN_API_KEY=your_qwen_key
+# KIMI_API_KEY=your_kimi_key
+# OPENAI_API_KEY=your_openai_key
 ```
 
 ### 3. 启动开发服务器
@@ -64,20 +73,26 @@ npm run dev
 
 ## 🔑 获取API密钥
 
-1. 访问 [智谱AI开放平台](https://open.bigmodel.cn/)
-2. 注册或登录账号
-3. 进入控制台
-4. 生成API密钥（免费）
+本项目支持 5 个 AI 提供商，配置**至少一个**即可：
+
+- **智谱 AI** — 访问 https://open.bigmodel.cn/ 获取密钥
+- **DeepSeek** — 访问 https://platform.deepseek.com/ 获取密钥
+- **通义千问** — 访问 https://dashscope.console.aliyun.com/ 获取密钥
+- **月之暗面** — 访问 https://platform.moonshot.cn/ 获取密钥
+- **OpenAI** — 访问 https://platform.openai.com/api-keys 获取密钥
 
 ## 🎮 游戏玩法
 
-1. 在 `.env.local` 中配置好 `ZHIPU_API_KEY`
-2. 点击"开始游戏"
-3. AI会生成文字描述和类别提示
-4. 根据描述猜测对应的词语
-5. 输入答案并提交
-6. 答对得10分，系统自动进入下一轮，完成5轮挑战
-7. 如果AI描述生成失败，系统会自动重试1次
+1. 打开浏览器，在首页展开「⚙️ API 配置」输入密钥（或已通过 `.env.local` 配置）
+2. 选择难度（休闲60s/5命、普通45s/3命、挑战30s/1命）
+3. 点击"开始游戏"
+4. AI会生成文字描述和类别提示
+5. 根据描述猜测对应的词语
+6. 输入答案并提交
+7. 答对得基础10分 + 速度加分（最高+5），答错或超时损失1条命
+8. 连续答对触发连击，连击≥3可恢复1条命
+9. 生命归零游戏结束，解锁成就、提升段位
+10. 如果AI描述生成失败，系统会自动重试1次
 
 ## ⚡ 常见问题
 
@@ -112,7 +127,7 @@ A:
 
 - [完整README](README.md)
 - [故障排除指南](TROUBLESHOOTING.md)
-- [智谱AI文档](https://open.bigmodel.cn/dev/api)
+- [查看所有API提供商](README.md#-配置-api-密钥)
 
 ## 🎯 成功标志
 

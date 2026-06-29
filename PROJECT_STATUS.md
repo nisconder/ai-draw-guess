@@ -1,186 +1,178 @@
 # 项目状态报告
 
-## ✅ 项目已完成！
+## ✅ v2.0 完成 — 生存竞速 (Survival Rush)
 
 ### 基本信息
-- **项目名称**: AI文字描述猜词游戏
-- **技术栈**: Next.js 14 + React 18 + TypeScript + Tailwind CSS
-- **AI服务**: 智谱AI GLM-4-Flash
-- **状态**: 已测试通过，可以正常运行
 
-### 项目文件结构
+- **项目名称**: 🔥 生存竞速 (Survival Rush) — AI 文字描述生存挑战
+- **技术栈**: Next.js 14 + React 18 + TypeScript 5 + Tailwind CSS 3
+- **AI 服务**: 5 家供应商 (ZhipuAI / DeepSeek / Qwen / Kimi / OpenAI)
+- **状态**: ✅ 构建通过，完整测试，可正常运行
+
+### 文件结构
+
 ```
 ai-draw-guess/
 ├── app/
-│   ├── api/
-│   │   └── generate-description/
-│   │       └── route.ts          ✅ AI描述生成API
-│   ├── globals.css                 ✅ 全局样式
-│   ├── layout.tsx                  ✅ 布局组件
-│   └── page.tsx                    ✅ 主游戏页面
-├── public/                         ✅ 静态资源目录
-├── check.bat                       ✅ Windows环境检测脚本
-├── check.sh                        ✅ Linux/Mac环境检测脚本
-├── verify.bat                      ✅ Windows项目验证脚本
-├── start.bat                       ✅ Windows启动脚本
-├── start.sh                        ✅ Linux/Mac启动脚本
-├── next.config.js                  ✅ Next.js配置
-├── package.json                    ✅ 项目依赖
-├── tailwind.config.js              ✅ Tailwind CSS配置
-├── tsconfig.json                   ✅ TypeScript配置
-├── README.md                       ✅ 项目说明文档
-├── QUICKSTART.md                   ✅ 快速开始指南
-├── TROUBLESHOOTING.md              ✅ 故障排除指南
-└── .env.example                    ✅ 环境变量示例
+│   ├── api/generate-description/route.ts   ✅ 5 供应商 AI API
+│   ├── globals.css                          ✅ 19 条冲击驱动关键帧动画
+│   ├── layout.tsx                           ✅ 根布局
+│   └── page.tsx                             ✅ Survival Rush 游戏引擎
+├── components/ (14 个文件)
+│   ├── ScreenOverlay.tsx                    ✅ 全屏闪屏 / 脉冲特效
+│   ├── ScreenShake.tsx                      ✅ 屏幕震动效果
+│   ├── HeartsDisplay.tsx                    ✅ 生命值动画显示
+│   ├── ComboIndicator.tsx                   ✅ 连击计数器 + 分层特效
+│   ├── TimerBar.tsx                         ✅ 视觉倒计时进度条
+│   ├── WordCard.tsx                         ✅ AI 描述展示卡片
+│   ├── InputArea.tsx                        ✅ 猜测输入框
+│   ├── AnswerFeedback.tsx                   ✅ 正确 / 错误浮层反馈
+│   ├── GameOverScreen.tsx                   ✅ 结束统计 + 成就展示
+│   ├── StartScreen.tsx                      ✅ 难度选择界面
+│   ├── AchievementBanner.tsx                ✅ 成就解锁通知
+│   ├── RankBadge.tsx                        ✅ 玩家段位徽章
+│   ├── HistoryPanel.tsx                     ✅ 游戏历史 + 统计
+│   └── ErrorBoundary.tsx                    ✅ 错误捕获 + 重试
+├── lib/
+│   ├── types.ts                             ✅ Survival Rush 类型定义
+│   ├── words.ts                             ✅ 100+ 词汇, 15+ 类别
+│   ├── env.ts                               ✅ 5 供应商环境变量配置
+│   ├── api-client.ts                        ✅ 统一 API 客户端
+│   ├── game-difficulty.ts                   ✅ 3 种难度预设
+│   ├── achievements.ts                      ✅ 10 项成就 + 段位系统
+│   └── storage.ts                           ✅ LocalStorage 持久化
+├── public/                                  ✅ 静态资源
+├── .env.example                             ✅ 5 组 API 密钥模板
+└── (配置文件)
 ```
 
-### 已修复的问题
+### 游戏规则
 
-#### 1. TypeScript类型错误
-- ✅ 为API响应添加了正确的类型定义
-- ✅ 修复了`data`类型为`unknown`的问题
-- ✅ 添加了DOM类型支持
+| 机制 | 说明 |
+|------|------|
+| ❤️ 初始生命 | 5 条 (依难度浮动) |
+| ⏱ 每轮时限 | 休闲 60s / 普通 45s / 挑战 30s |
+| ✅ 正确得分 | +10 基础分 + 速度奖励 (最高 +5) |
+| ❌ 错误 / 超时 | -1 生命 |
+| 🔥 连击 ≥ 3 | +1 生命 (不超过上限) |
+| 💀 0 生命 | 游戏结束 |
 
-#### 2. 依赖安装
-- ✅ 移除了不需要的OpenAI依赖
-- ✅ 保留了Next.js、React等核心依赖
+### 功能清单
 
-#### 3. 项目配置
-- ✅ 更新了next.config.js（移除了图像域名配置）
-- ✅ 配置了tsconfig.json（添加了DOM类型）
+| 功能 | 状态 |
+|------|------|
+| 5 家 AI 供应商 (ZhipuAI, DeepSeek, Qwen, Kimi, OpenAI) | ✅ |
+| Survival Rush 生存引擎 (生命 + 连击 + 回血) | ✅ |
+| 3 种难度模式 (休闲 / 普通 / 挑战) | ✅ |
+| 100+ 词汇, 15+ 类别, 难度分级 | ✅ |
+| 速度奖励计分 (最快 +5) | ✅ |
+| 连击回血系统 (≥3 连击 +1 心) | ✅ |
+| 10 项成就 + 6 个段位 (青铜 → 传说) | ✅ |
+| 19 条冲击驱动 CSS 关键帧动画 | ✅ |
+| 屏幕特效层 (闪屏 / 震动 / 脉冲 / 爆裂) | ✅ |
+| 游戏历史 + 统计 (LocalStorage) | ✅ |
+| 14 个独立 UI 组件 | ✅ |
+| ErrorBoundary 错误捕获 + 重试 | ✅ |
+| 响应式设计 | ✅ |
+| 渐进式 TypeScript 类型 | ✅ |
+| 供应商无关的 API 架构 | ✅ |
 
-### 测试结果
+### 10 项成就
 
-#### 构建测试
-```bash
-✓ Compiled successfully
-✓ Linting and checking validity of types
-✓ Collecting page data
-✓ Generating static pages
-✓ Finalizing page optimization
-```
+| 成就 | 解锁条件 |
+|------|----------|
+| 🏁 初次起跑 | 完成第一局游戏 |
+| 💯 满分战士 | 单局全部答对 |
+| 🔥 连击大师 | 达成 5 连击 |
+| ❤️ 不死传说 | 无伤通关 |
+| ⚡ 闪电反应 | 3 秒内答对 |
+| 🏆 百战勇士 | 累计 100 局 |
+| 📚 博闻强识 | 累计答对 200 题 |
+| 💀 濒死反击 | 剩 1 血时通关 |
+| 🎯 挑战达人 | 挑战难度通关 |
+| 👑 全成就 | 解锁所有成就 |
 
-#### 服务器启动测试
-```bash
-✓ Next.js 14.2.35
-✓ Local: http://localhost:3000
-✓ Ready in 1.4s
-```
+### 6 段位系统
 
-### 功能验证
+| 段位 | 条件 |
+|------|------|
+| 🥉 青铜 | 完成 1 局 |
+| 🥈 白银 | 完成 5 局 |
+| 🥇 黄金 | 完成 15 局 |
+| 💎 钻石 | 完成 30 局 |
+| 🏅 大师 | 完成 50 局 |
+| 👑 传说 | 完成 100 局 |
 
-| 功能 | 状态 | 说明 |
-|------|------|------|
-| 项目初始化 | ✅ | Next.js项目结构完整 |
-| 依赖安装 | ✅ | 所有依赖正确安装 |
-| TypeScript编译 | ✅ | 无类型错误 |
-| 代码检查 | ✅ | 通过ESLint检查 |
-| 开发服务器 | ✅ | 成功启动 |
-| API路由 | ✅ | /api/generate-description可用 |
-| 页面渲染 | ✅ | 主页面正确渲染 |
-| 响应式设计 | ✅ | 支持不同屏幕尺寸 |
+### 3 种难度
 
-### 游戏特性
-
-- ✅ AI生成生动文字描述
-- ✅ 5轮游戏挑战
-- ✅ 每轮60秒倒计时
-- ✅ 实时计分系统
-- ✅ 类别提示辅助
-- ✅ 响应式设计
-- ✅ 精美渐变界面
-
-### 启动方式
-
-#### Windows
-```bash
-# 方式1: 使用启动脚本
-start.bat
-
-# 方式2: 手动启动
-npm install
-npm run dev
-```
-
-#### Linux/Mac
-```bash
-# 方式1: 使用启动脚本
-./start.sh
-
-# 方式2: 手动启动
-npm install
-npm run dev
-```
-
-### API配置
-
-- **端点**: https://open.bigmodel.cn/api/paas/v4/chat/completions
-- **模型**: glm-4-flash
-- **认证方式**: Bearer Token
-- **获取密钥**: https://open.bigmodel.cn/
-
-### 词汇库
-
-当前包含20个词汇，涵盖多个类别：
-- 水果: 苹果
-- 宠物: 猫咪、狗
-- 天体: 太阳、月亮
-- 交通工具: 汽车
-- 植物: 花、树
-- 动物: 鱼、鸟
-- 建筑: 房子
-- 电子产品: 手机、电脑
-- 物品: 书本、眼镜、雨伞、杯子
-- 家具: 椅子
-- 工具: 时钟
-- 服饰: 鞋子
+| 参数 | 休闲 | 普通 | 挑战 |
+|------|------|------|------|
+| 初始生命 | 7 | 5 | 3 |
+| 时间限制 | 60s | 45s | 30s |
+| 难度标签 | 简单 / 中等 | 中等 / 困难 | 困难 / 极难 |
 
 ### 性能指标
 
-- **构建时间**: ~3秒
-- **启动时间**: ~1.4秒
-- **首次加载**: ~90KB
-- **API响应时间**: 取决于网络和智谱AI服务
+| 指标 | 数值 |
+|------|------|
+| 首页 JS 体积 | ~10 kB (首次加载 97.4 kB 含共享 chunk) |
+| API 路由 | 无服务器函数, ~0 kB 客户端包 |
+| 构建状态 | ✅ 通过 |
+| TypeScript | ✅ 严格模式 |
 
-### 文档
+### 启动方式
 
-- ✅ README.md - 完整的项目说明
-- ✅ QUICKSTART.md - 快速开始指南
-- ✅ TROUBLESHOOTING.md - 详细的故障排除
+```bash
+# 安装依赖
+npm install
 
-### 下一步
+# 配置环境变量 (至少填一个供应商密钥)
+cp .env.example .env.local
 
-1. **获取API密钥**
-   - 访问 https://open.bigmodel.cn/
-   - 注册/登录账号
-   - 生成API密钥（免费）
+# 开发模式
+npm run dev
 
-2. **启动游戏**
-   - 运行 `start.bat` (Windows) 或 `./start.sh` (Linux/Mac)
-   - 或手动运行 `npm run dev`
+# 生产构建
+npm run build && npm start
+```
 
-3. **开始游戏**
-   - 打开浏览器访问 http://localhost:3000
-   - 输入API密钥
-   - 开始挑战！
+### 词汇库
+
+当前包含 **100+ 词汇**，覆盖 **15+ 类别**，按难度分为三级：
+
+- **简单**: 水果、动物、食物、天气、颜色、身体部位
+- **中等**: 职业、交通工具、乐器、运动、家居
+- **困难**: 抽象概念、自然现象、科技、艺术、情感、社会
+
+### API 配置
+
+5 家供应商，配置任一即可运行：
+
+| 供应商 | 环境变量 | 模型 |
+|--------|----------|------|
+| 智谱 AI | `ZHIPU_API_KEY` | glm-4-flash |
+| DeepSeek | `DEEPSEEK_API_KEY` | deepseek-chat |
+| 通义千问 | `QWEN_API_KEY` | qwen-turbo |
+| Kimi | `KIMI_API_KEY` | moonshot-v1-8k |
+| OpenAI | `OPENAI_API_KEY` | gpt-4o-mini |
 
 ### 注意事项
 
-- ⚠️ 需要有效的智谱AI API密钥
-- ⚠️ GLM-4-Flash模型免费使用
-- ⚠️ 每次描述生成消耗API调用次数
-- ⚠️ 确保网络连接正常
-- ⚠️ 建议使用Node.js 18.x或更高版本
+- ⚠️ 至少配置一个供应商的 API 密钥
+- ⚠️ 不同供应商 API 价格与速率限制不同
+- ⚠️ 描述生成消耗 API 调用次数
+- ⚠️ 建议使用 Node.js 18.x 或更高版本
 
-### 支持
+### 后续规划
 
-如遇问题，请查阅：
-1. [快速开始指南](QUICKSTART.md)
-2. [故障排除指南](TROUBLESHOOTING.md)
-3. [智谱AI文档](https://open.bigmodel.cn/dev/api)
+- [ ] hooks/ 提取自定义 Hooks
+- [ ] 多人对战模式
+- [ ] 词库自定义导入
+- [ ] 国际化 (英文)
+- [ ] PWA 离线支持
 
 ---
 
-**报告生成时间**: 2026-01-27
-**项目版本**: 1.0.0
-**状态**: ✅ 已完成并测试通过
+**报告生成时间**: 2026-06-29
+**项目版本**: 2.0.0
+**状态**: ✅ v2.0 完成 — Survival Rush

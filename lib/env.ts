@@ -49,12 +49,17 @@ const ENV_KEY_MAP: Record<ProviderType, string> = {
   openai: 'OPENAI_API_KEY',
 }
 
-export function getApiConfig(provider: ProviderType): { baseUrl: string; apiKey: string; model: string } | null {
+export function getApiConfig(
+  provider: ProviderType,
+  overrideKey?: string,
+): { baseUrl: string; apiKey: string; model: string } | null {
   const config = PROVIDER_CONFIGS[provider]
   if (!config) return null
 
+  // Client-provided key takes precedence over env var; fall back to env.
   const envKey = ENV_KEY_MAP[provider]
-  const apiKey = process.env[envKey]
+  const trimmedOverride = overrideKey?.trim()
+  const apiKey = trimmedOverride ? trimmedOverride : process.env[envKey]
 
   if (!apiKey) return null
 

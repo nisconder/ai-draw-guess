@@ -5,6 +5,7 @@ import type { ProviderType } from '@/lib/types'
 interface RequestBody {
   word?: string
   provider?: string
+  apiKey?: string
 }
 
 export async function POST(request: NextRequest) {
@@ -37,8 +38,14 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // Optional client-provided API key (from browser localStorage).
+  // When present and non-empty, it overrides the server-side env var for this
+  // single request. When absent/empty, the env var fallback still works.
+  // The key is NEVER logged, stored in a cookie, or echoed back in the response.
+  const clientApiKey = typeof body.apiKey === 'string' ? body.apiKey : ''
+
   try {
-    const description = await generateDescription(word, provider)
+    const description = await generateDescription(word, provider, clientApiKey)
     return NextResponse.json({ description })
   } catch (error) {
     console.error(`[${provider}] 描述生成错误:`, error)

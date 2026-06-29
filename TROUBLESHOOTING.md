@@ -69,20 +69,39 @@ API密钥无效或网络错误
 ### 解决方法
 
 #### 检查API密钥
-1. 确认API密钥格式正确（通常以 `your-key.your-secret` 格式）
-2. 检查账户余额和额度
-3. 确认API密钥未过期
+1. 确认已配置至少一个API密钥
+2. 💡 也可以在游戏首页展开「⚙️ API 配置」面板直接输入密钥，无需编辑 `.env.local` 文件
+3. 如果使用 `.env.local`，确保环境变量名正确（`ZHIPU_API_KEY` / `DEEPSEEK_API_KEY` / `QWEN_API_KEY` / `KIMI_API_KEY` / `OPENAI_API_KEY`）
+4. 检查账户余额和额度
+5. 确认API密钥未过期
 
-#### 测试API连接
+#### 测试API连接（替换YOUR_API_KEY为实际密钥）
+
+**智谱AI：**
 ```bash
 curl -X POST "https://open.bigmodel.cn/api/paas/v4/chat/completions" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "glm-4-flash",
-    "messages": [{"role": "user", "content": "你好"}]
-  }'
+  -d '{"model": "glm-4-flash", "messages": [{"role": "user", "content": "你好"}]}'
 ```
+
+**DeepSeek：**
+```bash
+curl -X POST "https://api.deepseek.com/chat/completions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "deepseek-chat", "messages": [{"role": "user", "content": "你好"}]}'
+```
+
+**OpenAI：**
+```bash
+curl -X POST "https://api.openai.com/v1/chat/completions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "gpt-4o-mini", "messages": [{"role": "user", "content": "你好"}]}'
+```
+
+详细配置请参考 `.env.example` 文件中的注释说明。
 
 ## 5. Node.js版本问题
 
@@ -127,7 +146,11 @@ connect ECONNREFUSED
 
 #### 检查网络连接
 ```bash
-ping open.bigmodel.cn
+# 检查是否能访问你配置的AI提供商API
+# 智谱AI: ping open.bigmodel.cn
+# DeepSeek: ping api.deepseek.com
+# 通义千问: ping dashscope.aliyuncs.com
+# OpenAI: ping api.openai.com
 ```
 
 #### 配置代理（如果需要）
@@ -237,7 +260,12 @@ npm run dev
 2. 检查服务器终端的日志输出
 3. 打开浏览器开发者工具查看控制台错误
 4. 访问 [Next.js文档](https://nextjs.org/docs)
-5. 访问 [智谱AI文档](https://open.bigmodel.cn/dev/api)
+5. 查看AI提供商文档：
+   - [智谱AI文档](https://open.bigmodel.cn/dev/api)
+   - [DeepSeek文档](https://platform.deepseek.com/api-docs)
+   - [通义千问文档](https://help.aliyun.com/zh/model-studio/)
+   - [月之暗面文档](https://platform.moonshot.cn/docs)
+   - [OpenAI文档](https://platform.openai.com/docs)
 
 ## 常用命令
 

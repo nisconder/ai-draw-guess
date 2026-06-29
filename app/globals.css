@@ -1,3 +1,175 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================================
+   打击感 (Impact-driven) Screen Effect Animations
+   Pure CSS keyframes for survival rush word-guessing game.
+   Triggered by ScreenEffect types:
+   'correct' | 'wrong' | 'timeout' | 'combo' |
+   'heart-lose' | 'heart-gain' | 'achievement' | 'game-over'
+   ============================================================ */
+
+/* --- correct: 80ms white flash overlay --- */
+@keyframes screen-flash {
+  0% { background-color: rgba(255, 255, 255, 0); }
+  50% { background-color: rgba(255, 255, 255, 0.3); }
+  100% { background-color: rgba(255, 255, 255, 0); }
+}
+
+/* --- wrong: 300ms red flash --- */
+@keyframes screen-flash-red {
+  0% { background-color: rgba(255, 0, 0, 0); }
+  50% { background-color: rgba(255, 0, 0, 0.2); }
+  100% { background-color: rgba(255, 0, 0, 0); }
+}
+
+/* --- correct score: number pops up, scales, fades --- */
+@keyframes score-pop {
+  0% { transform: scale(0.5) translateY(0); opacity: 0; }
+  50% { transform: scale(1.3) translateY(-10px); opacity: 1; }
+  100% { transform: scale(1) translateY(-30px); opacity: 0; }
+}
+
+/* --- correct: brief light horizontal shake --- */
+@keyframes shake-light {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* --- wrong: intense horizontal shake --- */
+@keyframes shake-heavy {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-12px); }
+  20% { transform: translateX(12px); }
+  30% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  50% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  70% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+/* --- heart-lose: heart scales up then vanishes --- */
+@keyframes heart-explode {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+/* --- heart-gain: heart bounces in from below --- */
+@keyframes heart-pop-in {
+  0% { transform: translateY(20px) scale(0); opacity: 0; }
+  60% { transform: translateY(-5px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* --- timeout warning: timer pulses red --- */
+@keyframes timer-pulse {
+  0%, 100% { transform: scale(1); color: #ef4444; }
+  50% { transform: scale(1.1); color: #dc2626; }
+}
+
+/* --- timeout: timer bar desaturates and fades --- */
+@keyframes timer-desaturate {
+  0% { filter: saturate(1); opacity: 1; }
+  100% { filter: saturate(0.2); opacity: 0.4; }
+}
+
+/* --- combo 3-4: blue border glow --- */
+@keyframes border-pulse-blue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(59, 130, 246, 0.5); }
+}
+
+/* --- combo 5-7: purple border glow --- */
+@keyframes border-pulse-purple {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+  50% { box-shadow: 0 0 30px 6px rgba(139, 92, 246, 0.6); }
+}
+
+/* --- combo 8-10: golden burst --- */
+@keyframes border-golden {
+  0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+  30% { box-shadow: 0 0 40px 10px rgba(251, 191, 36, 0.8); }
+  100% { box-shadow: 0 0 10px 2px rgba(251, 191, 36, 0.3); }
+}
+
+/* --- combo counter: scale bounce --- */
+@keyframes combo-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+/* --- combo 8+: slight rotation + scale --- */
+@keyframes combo-rotate {
+  0% { transform: scale(1) rotate(0deg); }
+  30% { transform: scale(1.3) rotate(-5deg); }
+  60% { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* --- game over title: title bursts in --- */
+@keyframes title-explode {
+  0% { transform: scale(0); opacity: 0; text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+  70% { transform: scale(1.2); opacity: 1; text-shadow: 0 0 30px rgba(0, 0, 0, 0.3); }
+  100% { transform: scale(1); opacity: 1; text-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+}
+
+/* --- game over: screen slowly dims --- */
+@keyframes screen-dim {
+  0% { background-color: rgba(0, 0, 0, 0); }
+  100% { background-color: rgba(0, 0, 0, 0.7); }
+}
+
+/* --- achievement unlock: golden center burst --- */
+@keyframes golden-burst {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+    background: radial-gradient(circle, rgba(251, 191, 36, 1), rgba(251, 191, 36, 0));
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* --- achievement banner: slides in with elastic --- */
+@keyframes banner-slide-in {
+  0% { transform: translateY(-100%); opacity: 0; }
+  60% { transform: translateY(10px); opacity: 1; }
+  80% { transform: translateY(-5px); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* --- achievement particles: random dots scatter --- */
+@keyframes particle-scatter {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* --- wrong answer reveal: base opacity animation for typewriter --- */
+@keyframes fade-in-char {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ============================================================
+   Reduced motion: respect user preference, neutralize animations
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
