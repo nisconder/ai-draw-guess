@@ -1,20 +1,28 @@
 ﻿@echo off
+chcp 65001 >nul
 title Survival Rush - Quick Start
 
-echo ======================================
-echo   Survival Rush - Sheng Cun Jing Su
-echo   One-click Install + Start
-echo ======================================
+echo.
+echo   -----------------------------------------------
+echo            SURVIVAL RUSH - Quick Start
+echo   -----------------------------------------------
 echo.
 
-echo [1/2] Installing dependencies...
-call npm install
+echo [..] Installing dependencies...
+call npm install >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [FAIL] Install failed
+    pause
+    exit /b 1
+)
+echo [OK] Dependencies ready
 
 echo.
-echo [2/2] Starting dev server...
-echo    Open: http://localhost:3000
-echo    Enter API key in game UI: Settings - API Config
-echo    Press Ctrl+C to stop
+echo [..] Starting server...
+echo      Open: http://localhost:3000
+echo      API key: Enter in game UI (Settings -> API Config)
+echo      Stop: Ctrl+C
+echo   -----------------------------------------------
 echo.
 
 call npm run dev
