@@ -1,5 +1,6 @@
 // Server-only module — do NOT import in client components
-// API keys must NEVER be exposed to the browser
+// Environment-variable keys stay on the server. User-provided keys arrive from
+// browser storage through the description route and override the server fallback.
 
 import type { ProviderType } from './types'
 import { getApiConfig, getProviderConfig } from './env'
