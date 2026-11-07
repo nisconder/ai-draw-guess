@@ -164,8 +164,8 @@ function StartScreenInner({
             </div>
 
             {/* Privacy notice */}
-            <p className="text-xs text-gray-400 text-left">
-              密钥仅保存在浏览器本地，不会上传
+            <p className="text-xs text-gray-600 text-left">
+              密钥保存在当前浏览器；生成描述时会发送到本站服务端，再用于请求所选 AI 提供商。请仅在信任的站点填写。
             </p>
           </div>
         )}
